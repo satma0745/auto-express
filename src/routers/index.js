@@ -1,3 +1,3 @@
-import requests from './requests.js'
+import applications from './applications.js'
 
-export { requests }
+export { applications }
