@@ -1,20 +1,14 @@
 import express from 'express'
 import { checkSchema, validationResult, param } from 'express-validator'
 
-const generateRequestId = (() => {
-  let nextId = 1
-  return () => {
-    const id = nextId
-    nextId += 1
-    return id
-  }
-})()
-
-const applications = []
+import * as service from '../services/applications.js'
 
 const router = express.Router()
 
-router.get('/all', (_, res) => res.status(200).send(applications))
+router.get('/all', (_, res) => {
+  const applications = service.getAllApplications()
+  return res.status(200).send(applications)
+})
 
 router.post(
   '/submit',
@@ -36,14 +30,7 @@ router.post(
       return res.status(400).json({ validationErrors: errors.array() })
     }
 
-    const application = {
-      id: generateRequestId(),
-      fullName: req.body?.fullName,
-      phoneNumber: req.body?.phoneNumber,
-      status: 'pending',
-    }
-
-    applications.push(application)
+    service.submitNewApplication(req.body)
     return res.sendStatus(200)
   }
 )
@@ -54,20 +41,19 @@ router.post('/:applicationId/review', param('applicationId').isInt().toInt(), (r
     return res.status(400).json({ validationErrors: errors.array() })
   }
 
-  const applicationId = req.params.applicationId
-  if (!applications.some((application) => application.id === applicationId)) {
-    return res.sendStatus(404)
+  try {
+    service.reviewApplication(req.params.applicationId, req.body)
+    return res.sendStatus(200)
+  } catch (error) {
+    switch (error.message) {
+      case 'Not found.':
+        return res.sendStatus(404)
+      case 'Request has already been reviewed.':
+        return res.status(403).send(error.message)
+      default:
+        return res.sendStatus(500)
+    }
   }
-
-  const application = applications.find((application) => application.id === applicationId)
-  if (application.status !== 'pending') {
-    return res.status(403).send('Request has already been reviewed.')
-  }
-
-  application.note = req.body?.note
-  application.status = 'reviewed'
-
-  return res.sendStatus(200)
 })
 
 export default router
