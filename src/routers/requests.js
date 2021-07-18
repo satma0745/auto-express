@@ -2,10 +2,9 @@ import express from 'express'
 
 const requests = []
 
-const app = express()
-app.use(express.json())
+const router = express.Router()
 
-app.post('/api/requests', (req, res) => {
+router.post('/', (req, res) => {
   const request = {
     fullName: req.body?.fullName,
     phoneNumber: req.body?.phoneNumber,
@@ -22,14 +21,11 @@ app.post('/api/requests', (req, res) => {
   }
 
   requests.push(request)
-  res.send(200)
+  res.sendStatus(200)
 })
 
-app.get('/api/requests', (_, res) => {
+router.get('/', (_, res) => {
   res.status(200).send(requests)
 })
 
-const port = 5050
-app.listen(port, () => {
-  console.log(`Listening on ${port} port.`)
-})
+export default router
