@@ -1,4 +1,5 @@
 const express = require('express')
+const config = require('./config')
 const routers = require('./routers')
 
 const app = express()
@@ -11,3 +12,6 @@ const port = 5050
 app.listen(port, () => {
   console.log(`Listening on ${port} port.`)
 })
+
+config.environment()
+config.database()

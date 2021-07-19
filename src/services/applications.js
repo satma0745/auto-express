@@ -1,35 +1,20 @@
-const generateRequestId = (() => {
-  let nextId = 1
-  return () => {
-    const id = nextId
-    nextId += 1
-    return id
-  }
-})()
+const { Application } = require('../models')
 
-const applications = []
+const getAllApplications = () => Application.find()
 
-const getAllApplications = () => applications
+const submitNewApplication = (application) => Application.create(application)
 
-const submitNewApplication = (application) =>
-  applications.push({
-    ...application,
-    id: generateRequestId(),
-    status: 'pending',
-  })
-
-const reviewApplication = (applicationId, { note }) => {
-  if (!applications.some((application) => application.id === applicationId)) {
+const reviewApplication = async (applicationId, { note }) => {
+  const application = await Application.findById(applicationId)
+  if (!application) {
     throw new Error('Not found.')
   }
 
-  const application = applications.find((application) => application.id === applicationId)
   if (application.status !== 'pending') {
     throw new Error('Request has already been reviewed.')
   }
 
-  application.note = note
-  application.status = 'reviewed'
+  await Application.updateOne({ _id: application.id }, { note, status: 'reviewed' })
 }
 
 module.exports = { getAllApplications, submitNewApplication, reviewApplication }
