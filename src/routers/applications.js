@@ -1,7 +1,7 @@
-import express from 'express'
+const express = require('express')
 
-import { validateRequest, applicationRules } from '../validation/index.js'
-import * as service from '../services/applications.js'
+const { validateRequest, applicationRules } = require('../validation')
+const service = require('../services/applications')
 
 const router = express.Router()
 
@@ -31,4 +31,4 @@ router.post('/:applicationId/review', applicationRules.review, validateRequest, 
   }
 })
 
-export default router
+module.exports = router

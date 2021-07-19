@@ -1,6 +1,4 @@
-import { validationResult } from 'express-validator'
-
-import * as applicationRules from './application.js'
+const { validationResult } = require('express-validator')
 
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req)
@@ -11,4 +9,4 @@ const validateRequest = (req, res, next) => {
   return next()
 }
 
-export { validateRequest, applicationRules }
+module.exports = { validateRequest, applicationRules: require('./application') }

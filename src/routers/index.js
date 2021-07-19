@@ -1,3 +1,1 @@
-import applications from './applications.js'
-
-export { applications }
+module.exports = { applications: require('./applications') }

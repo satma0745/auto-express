@@ -3,7 +3,6 @@
   "description": "AutoExpress REST API",
   "author": "catman0745",
   "license": "ISC",
-  "type": "module",
   "scripts": {
     "start": "nodemon ./src/index.js"
   },

@@ -1,5 +1,5 @@
-import express from 'express'
-import * as routers from './routers/index.js'
+const express = require('express')
+const routers = require('./routers')
 
 const app = express()
 

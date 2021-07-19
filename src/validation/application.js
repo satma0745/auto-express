@@ -1,4 +1,4 @@
-import { checkSchema, param } from 'express-validator'
+const { checkSchema, param } = require('express-validator')
 
 const submit = checkSchema({
   fullName: {
@@ -15,4 +15,4 @@ const submit = checkSchema({
 
 const review = param('applicationId').isInt().toInt()
 
-export { submit, review }
+module.exports = { submit, review }

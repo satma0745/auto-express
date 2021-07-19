@@ -32,4 +32,4 @@ const reviewApplication = (applicationId, { note }) => {
   application.status = 'reviewed'
 }
 
-export { getAllApplications, submitNewApplication, reviewApplication }
+module.exports = { getAllApplications, submitNewApplication, reviewApplication }
