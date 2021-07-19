@@ -1,6 +1,6 @@
 import express from 'express'
-import { checkSchema, validationResult, param } from 'express-validator'
 
+import { validateRequest, applicationRules } from '../validation/index.js'
 import * as service from '../services/applications.js'
 
 const router = express.Router()
@@ -10,37 +10,12 @@ router.get('/all', (_, res) => {
   return res.status(200).send(applications)
 })
 
-router.post(
-  '/submit',
-  checkSchema({
-    fullName: {
-      in: 'body',
-      notEmpty: true,
-      errorMessage: 'Specify full name.',
-    },
-    phoneNumber: {
-      in: 'body',
-      notEmpty: true,
-      errorMessage: 'Specify phone number.',
-    },
-  }),
-  (req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ validationErrors: errors.array() })
-    }
+router.post('/submit', applicationRules.submit, validateRequest, (req, res) => {
+  service.submitNewApplication(req.body)
+  return res.sendStatus(200)
+})
 
-    service.submitNewApplication(req.body)
-    return res.sendStatus(200)
-  }
-)
-
-router.post('/:applicationId/review', param('applicationId').isInt().toInt(), (req, res) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ validationErrors: errors.array() })
-  }
-
+router.post('/:applicationId/review', applicationRules.review, validateRequest, (req, res) => {
   try {
     service.reviewApplication(req.params.applicationId, req.body)
     return res.sendStatus(200)
