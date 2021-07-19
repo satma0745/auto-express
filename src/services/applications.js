@@ -14,7 +14,11 @@ const reviewApplication = async (applicationId, { note }) => {
     throw new Error('Request has already been reviewed.')
   }
 
-  await Application.updateOne({ _id: application.id }, { note, status: 'reviewed' })
+  await Application.updateOne(
+    { _id: application.id },
+    { note, status: 'reviewed' },
+    { runValidators: true }
+  )
 }
 
 module.exports = { getAllApplications, submitNewApplication, reviewApplication }
