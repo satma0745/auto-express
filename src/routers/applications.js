@@ -25,7 +25,7 @@ router.post(
       return res.sendStatus(200)
     } catch (error) {
       switch (error.message) {
-        case 'Not found.':
+        case 'Application not found.':
           return res.sendStatus(404)
         case 'Request has already been reviewed.':
           return res.status(403).send(error.message)

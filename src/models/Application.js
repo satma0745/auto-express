@@ -29,6 +29,23 @@ const schema = new Schema({
   },
 })
 
+schema.statics.exists = async function (applicationId) {
+  return !!(await this.find({ _id: applicationId }))
+}
+
+schema.statics.isPending = async function (applicationId) {
+  const application = await this.findById(applicationId)
+  return application.status === 'pending'
+}
+
+schema.statics.review = function (applicationId, note) {
+  return this.updateOne(
+    { _id: applicationId },
+    { note, status: 'reviewed' },
+    { runValidators: true }
+  )
+}
+
 const Application = model('Application', schema)
 
 module.exports = Application
